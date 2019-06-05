@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, NgForm } from '@angular/forms';
 import { HttpClient } from "@angular/common/http";
 
 @Injectable({
@@ -41,5 +41,8 @@ export class UserService {
       Password: this.formModel.value.Passwords.Password
     };
     return this.http.post(this.BaseURI + '/ApplicationUser/Register', body);
+  }
+  login(formData) {
+    return this.http.post(this.BaseURI + '/ApplicationUser/Login', formData);
   }
 }
