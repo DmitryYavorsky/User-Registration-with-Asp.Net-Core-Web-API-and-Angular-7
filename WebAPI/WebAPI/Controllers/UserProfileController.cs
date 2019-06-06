@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserProfile()
         {
-            string userId = User.Claims.First(c => c.Type == "UserId").Value;
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
             var user = await _userManager.FindByIdAsync(userId);
             return Ok(new
             {

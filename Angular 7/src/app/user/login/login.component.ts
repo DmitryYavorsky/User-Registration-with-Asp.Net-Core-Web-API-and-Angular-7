@@ -31,5 +31,9 @@ export class LoginComponent implements OnInit {
       }
     );
   }
-  ngOnInit() {}
+  ngOnInit() {
+    if (localStorage.getItem('token') != null) {
+       this.router.navigate(['/home']);
+    }
+  }
 }

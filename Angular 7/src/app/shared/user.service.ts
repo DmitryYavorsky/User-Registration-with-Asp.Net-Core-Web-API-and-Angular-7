@@ -1,24 +1,26 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, NgForm } from '@angular/forms';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-
-  constructor(private fb: FormBuilder, private http: HttpClient) { }
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {}
   readonly BaseURI = 'http://localhost:54277/api';
 
   formModel = this.fb.group({
     UserName: ['', Validators.required],
     Email: ['', Validators.email],
     FullName: [''],
-    Passwords: this.fb.group({
-      Password: ['', [Validators.required, Validators.minLength(4)]],
-      ConfirmPassword: ['', Validators.required]
-    }, { validator: this.comparePasswords })
-
+    Passwords: this.fb.group(
+      {
+        Password: ['', [Validators.required, Validators.minLength(4)]],
+        ConfirmPassword: ['', Validators.required]
+      },
+      { validator: this.comparePasswords }
+    )
   });
 
   comparePasswords(fb: FormGroup) {
@@ -26,10 +28,8 @@ export class UserService {
     //passwordMismatch
     //confirmPswrdCtrl.errors={passwordMismatch:true}
     if (confirmPswrdCtrl.errors == null || 'passwordMismatch' in confirmPswrdCtrl.errors) {
-      if (fb.get('Password').value != confirmPswrdCtrl.value)
-        confirmPswrdCtrl.setErrors({ passwordMismatch: true });
-      else
-        confirmPswrdCtrl.setErrors(null);
+      if (fb.get('Password').value != confirmPswrdCtrl.value) confirmPswrdCtrl.setErrors({ passwordMismatch: true });
+      else confirmPswrdCtrl.setErrors(null);
     }
   }
 
@@ -44,5 +44,12 @@ export class UserService {
   }
   login(formData) {
     return this.http.post(this.BaseURI + '/ApplicationUser/Login', formData);
+  }
+  logout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/user/login']);
+  }
+  getUserProfile() {
+    return this.http.get(this.BaseURI + '/UserProfile' + '/profile');
   }
 }
